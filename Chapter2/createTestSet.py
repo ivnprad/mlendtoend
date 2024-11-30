@@ -55,7 +55,7 @@ housing = load_housing_data()
 # train_set,test_set = train_test_split(housing,test_size=0.2,random_state=42)
 # print(f"train set length {len(train_set)} and test set length {len(test_set)}")  
 
-# if an attribute is important for a data set it is crucial to get the right number of samples
+# if an attribute is important for a data set. We use "correlations" to look for important attributes     it is crucial to get the right number of samples
 # for each stratum 
 
 housing["income_cat"] = pd.cut( housing["median_income"], 
