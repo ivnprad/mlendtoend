@@ -62,55 +62,47 @@ class StandardScalerClone(BaseEstimator,TransformerMixin):
             X = X - self.mean_
         return X/self.scale_
     
+from sklearn.cluster import KMeans
 
+class ClusterSimilarity(BaseEstimator,TransformerMixin):
+    def __init__(self, n_clusters=10, gamma=1.0, random_state=None):
+        self.n_clusters = n_clusters
+        self.gamma = gamma
+        self.random_state = random_state
+ 
+    def fit (self, X,y=None,sample_weight=None):
+        self.kmeans_ = KMeans(self.n_clusters,n_init=10,
+                              random_state = self.random_state)
+        self.kmeans_.fit(X,sample_weight=sample_weight)
+        return self
+    
+    def transform(self,X):
+        return rbf_kernel(X, self.kmeans_.cluster_centers_,gamma=self.gamma)
+    
+    def get_features_name_out(self,names=None):
+        return [f"Cluster {i} similarity" for i in range(self.n_clusters)]
+    
+cluster_simil = ClusterSimilarity(n_clusters=10, gamma=1., random_state=42)
+similarities = cluster_simil.fit_transform(housing[["latitude", "longitude"]],
+                                           sample_weight=housing_labels)
 
-from sklearn.pipeline import Pipeline, make_pipeline
-from sklearn.impute import SimpleImputer
-from sklearn.preprocessing import StandardScaler
+print(similarities[:3].round(2))
 
-# num_pipeline = Pipeline([
-#     ("impute",SimpleImputer(strategy="median")),
-#     ("standarize",StandardScaler()),
-# ])
+housing_renamed = housing.rename(columns={
+    "latitude": "Latitude", "longitude": "Longitude",
+    "population": "Population",
+    "median_house_value": "Median house value (ᴜsᴅ)"})
+housing_renamed["Max cluster similarity"] = similarities.max(axis=1)
 
-num_pipeline = make_pipeline(SimpleImputer(strategy="median"),StandardScaler())
-
-housing_num_prepared = num_pipeline.fit_transform(housing_num)
-print(housing_num_prepared[:2].round(2))
-
-df_housing_num_prepared = pd.DataFrame(
-    housing_num_prepared,columns=num_pipeline.get_feature_names_out(),
-    index=housing_num.index
-)
-print(df_housing_num_prepared.head())
-
-from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import OneHotEncoder#
-
-num_attribs = ["longitude","latitude","housing_median_age","total_rooms",
-               "total_bedrooms","population","households","median_income"]
-cat_attribs = ["ocean_proximity"]
-
-cat_pipeline = make_pipeline(
-    SimpleImputer(strategy="most_frequent"),
-    OneHotEncoder(handle_unknown="ignore")
-)
-
-preprocessing = ColumnTransformer([
-    ("num",num_pipeline,num_attribs),
-    ("cat",cat_pipeline,cat_attribs)
-])
-
-from sklearn.compose import make_column_selector,make_column_transformer
-
-preprocessing = make_column_transformer(
-    (num_pipeline,make_column_selector(dtype_include=np.number)),
-    (cat_pipeline,make_column_selector(dtype_include=object)),
-)
-
-housing_prepared = preprocessing.fit_transform(housing)
-df_housing_num_prepared = pd.DataFrame(
-    housing_prepared,columns=preprocessing.get_feature_names_out(),
-    index=housing.index
-)
-print(df_housing_num_prepared.head())
+housing_renamed.plot(kind="scatter", x="Longitude", y="Latitude", grid=True,
+                     s=housing_renamed["Population"] / 100, label="Population",
+                     c="Max cluster similarity",
+                     cmap="jet", colorbar=True,
+                     legend=True, sharex=False, figsize=(10, 7))
+plt.plot(cluster_simil.kmeans_.cluster_centers_[:, 1],
+         cluster_simil.kmeans_.cluster_centers_[:, 0],
+         linestyle="", color="black", marker="X", markersize=20,
+         label="Cluster centers")
+plt.legend(loc="upper right")
+#save_fig("district_cluster_plot")
+plt.show()

@@ -91,28 +91,51 @@ housing_num_std_scaled = std_scaler.fit_transform(housing_num)
 
 import  matplotlib.pyplot as plt
 
-fig, axs = plt.subplots(1,2, figsize=(8,3),sharey=True)
-housing["population"].hist(ax=axs[0],bins=50)
-housing["population"].apply(np.log).hist(ax=axs[1],bins=50)
-plt.show()
-# housing_num["population"].hist(bins=50,figsize=(12,8))
+# log population to get rid of tail
+# fig, axs = plt.subplots(1,2, figsize=(8,3),sharey=True)
+# housing["population"].hist(ax=axs[0],bins=50)
+# housing["population"].apply(np.log).hist(ax=axs[1],bins=50)
 # plt.show()
 
+# Add a new feature to make it easy for the ML algorithm to recognize 
 # from sklearn.metrics.pairwise import rbf_kernel
+
+# ages = np.linspace(housing["housing_median_age"].min(),
+#                    housing["housing_median_age"].max(),
+#                    500).reshape(-1,1)
+
+# gamma1 = 0.1
+# gamma2 = 0.03
+# rbf1 = rbf_kernel(ages,[[35]],gamma=gamma1)
+# rbf2 = rbf_kernel(ages,[[35]],gamma=gamma2)
+
+# fig, ax1 = plt.subplots()
+
+# ax1.hist(housing["housing_median_age"],bins=50)
+
+# ax2 = ax1.twinx()  # create a twin axis that shares the same x-axis
+# color = "blue"
+# ax2.plot(ages, rbf1, color=color, label="gamma = 0.10")
+# ax2.plot(ages, rbf2, color=color, label="gamma = 0.03", linestyle="--")
+# ax2.tick_params(axis='y', labelcolor=color)
+# ax2.set_ylabel("Age similarity", color=color)
+
+# plt.show()
+
 
 # age_simil_35 = rbf_kernel(housing_num[["housing_median_age"]],[[35]],gamma=0.1)
 # # how to plot age_simil_35
 
-# from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import LinearRegression
 
-# target_scaler = StandardScaler()
-# scaled_labels = target_scaler.fit_transform(housing_labels.to_frame())
+target_scaler = StandardScaler()
+scaled_labels = target_scaler.fit_transform(housing_labels.to_frame())
 
-# model = LinearRegression()
-# model.fit(housing[["median_income"]],scaled_labels)
-# some_new_data = housing[["median_income"]].iloc[:5] # pretend this is is new data
+model = LinearRegression()
+model.fit(housing[["median_income"]],scaled_labels)
+some_new_data = housing[["median_income"]].iloc[:5] # pretend this is is new data
 
-# scaled_predictions = model.predict(some_new_data)
-# predictions = target_scaler.inverse_transform(scaled_predictions)
-# print(predictions)
-# print(some_new_data)
+scaled_predictions = model.predict(some_new_data)
+predictions = target_scaler.inverse_transform(scaled_predictions)
+print(predictions)
+print(some_new_data)
