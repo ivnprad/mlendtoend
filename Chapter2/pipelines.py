@@ -4,7 +4,7 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 
 housing = load_housing_data()
-print(housing.head())
+# print(housing.head())
 
 # prepare categories to stratidifed sampling since median income is the attribute more correlated with the target label
 housing["income_cat"] = pd.cut( housing["median_income"], 
@@ -26,21 +26,25 @@ from sklearn.pipeline import Pipeline, make_pipeline
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler
 
-# num_pipeline = Pipeline([
-#     ("impute",SimpleImputer(strategy="median")),
-#     ("standarize",StandardScaler()),
-# ])
+num_pipeline = Pipeline([
+    ("impute",SimpleImputer(strategy="median")),
+    ("standarize",StandardScaler()),
+])
+
+from sklearn import set_config
+set_config(display='diagram')
+# print(num_pipeline)
 
 num_pipeline = make_pipeline(SimpleImputer(strategy="median"),StandardScaler())
 
 housing_num_prepared = num_pipeline.fit_transform(housing_num)
-print(housing_num_prepared[:2].round(2))
+# print(housing_num_prepared[:2].round(2))
 
 df_housing_num_prepared = pd.DataFrame(
     housing_num_prepared,columns=num_pipeline.get_feature_names_out(),
     index=housing_num.index
 )
-print(df_housing_num_prepared.head())
+# print(df_housing_num_prepared.head())
 
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder#
