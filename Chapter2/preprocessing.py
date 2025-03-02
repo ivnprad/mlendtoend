@@ -59,7 +59,7 @@ for set_ in (strat_train_set,strat_test_set):
     set_.drop("income_cat",axis=1, inplace=True)
 
 housing = strat_train_set.drop("median_house_value", axis=1)
-
+housing_labels = strat_train_set["median_house_value"].copy()
 
 from sklearn.pipeline import Pipeline, make_pipeline
 from sklearn.preprocessing import FunctionTransformer, StandardScaler,OneHotEncoder
@@ -126,6 +126,20 @@ preprocessing = ColumnTransformer(
     remainder=default_num_pipeline
 )
 
-housing_prepared = preprocessing.fit_transform(housing)
-print(housing_prepared.shape)
-print(preprocessing.get_feature_names_out())
+# housing_prepared = preprocessing.fit_transform(housing)
+# print(housing_prepared.shape)
+# print(preprocessing.get_feature_names_out())
+
+from sklearn.linear_model import LinearRegression
+
+lin_reg = make_pipeline(preprocessing,LinearRegression())
+lin_reg.fit(housing,housing_labels)
+
+housing_predictions = lin_reg.predict(housing)
+print(housing_predictions[:5].round(-2))
+print(housing_labels.iloc[:5].values)
+
+from sklearn.metrics import mean_squared_error
+lin_rmse = mean_squared_error(housing_labels, housing_predictions,
+                              squared=False)
+print(lin_rmse)  
