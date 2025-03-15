@@ -1,2 +1,12 @@
 .DS_Store
 .ipynb_checkpoints/
+deeplearningia_tensorflow/horse-or-human
+deeplearningia_tensorflow/validation-horse-or-human
+deeplearningia_tensorflow/validation-horse-or-human.zip
+deeplearningia_tensorflow/C2/cats_and_dogs_filtered
+deeplearningia_tensorflow/C2/archive_shutil.zip
+deeplearningia_tensorflow/C2/audio.py
+deeplearningia_tensorflow/horse-or-human.zip
+opencv/
+tensorflow-1-public/
+deeplearningia_tensorflow/__pycache__/
