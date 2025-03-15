@@ -13,7 +13,8 @@ import tensorflow as tf
 from ipywidgets import widgets
 from IPython.display import display
 
-model = tf.keras.models.load_model('C1W4.keras')
+model = tf.keras.models.load_model('deeplearningia_tensorflow/withvalidation.keras')
+#model = tf.keras.models.load_model('./compressed_images.keras')
 model.summary()
 rescale_layer = tf.keras.layers.Rescaling(scale=1./255)
 
@@ -52,10 +53,11 @@ trainDirectory = Path.cwd() / "deeplearningia_tensorflow" / TRAIN_DIR / "horses"
 file = trainDirectory/'horse50-2.png'
 
 
-file = Path.cwd() /"deeplearningia_tensorflow"/"horse.png"
+#file = Path.cwd() /"deeplearningia_tensorflow"/"horse.png"
 
 
 image = tf.keras.utils.load_img(file, target_size=(300, 300))
+#image = tf.keras.utils.load_img(file, target_size=(150, 150))
 image = tf.keras.utils.img_to_array(image)
 image = rescale_layer(image)
 image = np.expand_dims(image, axis=0)
