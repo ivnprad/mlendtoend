@@ -7,6 +7,11 @@ deeplearningia_tensorflow/C2/cats_and_dogs_filtered
 deeplearningia_tensorflow/C2/archive_shutil.zip
 deeplearningia_tensorflow/C2/audio.py
 deeplearningia_tensorflow/horse-or-human.zip
+deeplearningia_tensorflow/C2/W4/rps/
+deeplearningia_tensorflow/C2/W4/rps-test-set 
+deeplearningia_tensorflow/C2/W4/rps-test-set.zip 
+deeplearningia_tensorflow/C2/W4/rps-validation.zip
+deeplearningia_tensorflow/C2/W4/rps.zip
 opencv/
 tensorflow-1-public/
 deeplearningia_tensorflow/__pycache__/
